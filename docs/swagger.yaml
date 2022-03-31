@@ -1,4 +1,751 @@
+definitions:
+  controllers.orderInput:
+    properties:
+      payment_id:
+        type: integer
+      product_id:
+        type: integer
+      qty:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  controllers.paymentInput:
+    properties:
+      method_id:
+        type: integer
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  controllers.paymentMethodInput:
+    properties:
+      method_name:
+        type: string
+    type: object
+  controllers.productCategoryInput:
+    properties:
+      category:
+        type: string
+    type: object
+  controllers.productInput:
+    properties:
+      category_id:
+        type: integer
+      desc:
+        type: string
+      product:
+        type: string
+    type: object
+  controllers.reviewInput:
+    properties:
+      comment:
+        type: string
+      product_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Category:
+    properties:
+      category:
+        type: string
+      id:
+        type: integer
+    type: object
+  models.Method:
+    properties:
+      id:
+        type: integer
+      method_name:
+        type: string
+    type: object
+  models.Order:
+    properties:
+      date:
+        type: string
+      id:
+        type: integer
+      payment_id:
+        type: integer
+      product_id:
+        type: integer
+      qty:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Payment:
+    properties:
+      id:
+        type: integer
+      method_id:
+        type: integer
+      status:
+        type: string
+      total:
+        type: number
+    type: object
+  models.Product:
+    properties:
+      category_id:
+        type: integer
+      desc:
+        type: string
+      id:
+        type: integer
+      product:
+        type: string
+    type: object
+  models.Review:
+    properties:
+      comment:
+        type: string
+      id:
+        type: integer
+      product_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+paths:
+  /order/{id}:
+    delete:
+      description: Delete a order by id.
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one order.
+      tags:
+      - Order
+  /orders:
+    get:
+      description: Get a list of Orders.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Order'
+            type: array
+      summary: Get all orders.
+      tags:
+      - Order
+    post:
+      description: Creating a new Order.
+      parameters:
+      - description: the body to create a new order
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.orderInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+      summary: Create New Order.
+      tags:
+      - Order
+  /orders/{id}:
+    get:
+      description: Get a Order by id.
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+      summary: Get Order.
+      tags:
+      - Order
+    patch:
+      description: Update order by id.
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update an order
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.orderInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+      summary: Update Order.
+      tags:
+      - Order
+  /payment:
+    post:
+      description: Creating a new Payments.
+      parameters:
+      - description: the body to create a new Payment
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.paymentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Payment'
+      summary: Create New Payments.
+      tags:
+      - Payment
+  /payment-method:
+    get:
+      description: Get a list of PaymentMethod.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Method'
+            type: array
+      summary: Get all PaymentMethod.
+      tags:
+      - PaymentMethod
+  /payment-method/{id}:
+    delete:
+      description: Delete a Method by id.
+      parameters:
+      - description: Method id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one Method.
+      tags:
+      - PaymentMethod
+    get:
+      description: Get an PaymentMethod by id.
+      parameters:
+      - description: Method id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Method'
+      summary: Get PaymentMethod.
+      tags:
+      - PaymentMethod
+    patch:
+      description: Update Method by id.
+      parameters:
+      - description: Method id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update payment method
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.paymentMethodInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Method'
+      summary: Update Method.
+      tags:
+      - PaymentMethod
+  /payment-method/{id}/payments:
+    get:
+      description: Get all Payments by MethodId.
+      parameters:
+      - description: Method id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Payment'
+            type: array
+      summary: Get Payments.
+      tags:
+      - PaymentMethod
+  /payment-methods:
+    post:
+      description: Creating a new Method.
+      parameters:
+      - description: the body to create a new Method
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.paymentMethodInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Method'
+      summary: Create New Method.
+      tags:
+      - PaymentMethod
+  /payment/{id}:
+    delete:
+      description: Delete a Payment by id.
+      parameters:
+      - description: Payment id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one Payment.
+      tags:
+      - Payment
+    get:
+      description: Get an Payment by id.
+      parameters:
+      - description: Payment id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Payment'
+      summary: Get Payment.
+      tags:
+      - Payment
+    patch:
+      description: Update Payment by id.
+      parameters:
+      - description: Payment id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update Payment
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.paymentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Payment'
+      summary: Update Payment.
+      tags:
+      - Payment
+  /payments:
+    get:
+      description: Get a list of Payments.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Payment'
+            type: array
+      summary: Get all Payments.
+      tags:
+      - Payment
+  /product:
+    post:
+      description: Creating a new Product.
+      parameters:
+      - description: the body to create a new Product
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.productInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+      summary: Create New Product.
+      tags:
+      - Product
+  /product-categories:
+    get:
+      description: Get a list of ProductCategories.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Category'
+            type: array
+      summary: Get all ProductCategories.
+      tags:
+      - ProductCategory
+    post:
+      description: Creating a new ProductCategory.
+      parameters:
+      - description: the body to create a new Category
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.productCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Create New ProductCategory.
+      tags:
+      - ProductCategory
+  /product-categories/{id}:
+    delete:
+      description: Delete a Category by id.
+      parameters:
+      - description: Category id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one Category.
+      tags:
+      - ProductCategory
+    get:
+      description: Get an ProductCategory by id.
+      parameters:
+      - description: Category id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Get ProductCategory.
+      tags:
+      - ProductCategory
+    patch:
+      description: Update Category by id.
+      parameters:
+      - description: Category id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update product category
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.productCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Category'
+      summary: Update Category.
+      tags:
+      - ProductCategory
+  /product-categories/{id}/product:
+    get:
+      description: Get all Product by ProductCategoryId.
+      parameters:
+      - description: Category id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+      summary: Get Products.
+      tags:
+      - ProductCategory
+  /product/{id}:
+    delete:
+      description: Delete a Product by id.
+      parameters:
+      - description: Product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one Product.
+      tags:
+      - Product
+    get:
+      description: Get an Product by id.
+      parameters:
+      - description: Product id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+      summary: Get Product.
+      tags:
+      - Product
+    patch:
+      description: Update Product by id.
+      parameters:
+      - description: Product id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update Product
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.productInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Product'
+      summary: Update Product.
+      tags:
+      - Product
+  /products:
+    get:
+      description: Get a list of Products.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Product'
+            type: array
+      summary: Get all Products.
+      tags:
+      - Product
+  /review/{id}:
+    delete:
+      description: Delete a review by id.
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      summary: Delete one review.
+      tags:
+      - Review
+  /reviews:
+    get:
+      description: Get a list of Reviews.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Review'
+            type: array
+      summary: Get all reviews.
+      tags:
+      - Review
+    post:
+      description: Creating a new Review.
+      parameters:
+      - description: the body to create a new review
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.reviewInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+      summary: Create New Review.
+      tags:
+      - Review
+  /reviews/{id}:
+    get:
+      description: Get a Review by id.
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+      summary: Get Review.
+      tags:
+      - Review
+    patch:
+      description: Update review by id.
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: the body to update an review
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.reviewInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+      summary: Update Review.
+      tags:
+      - Review
 swagger: "2.0"

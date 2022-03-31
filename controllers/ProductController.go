@@ -17,11 +17,11 @@ type productInput struct {
 // GetAllProducts godoc
 // @Summary Get all Products.
 // @Description Get a list of Products.
-// @Tags Products
+// @Tags Product
 // @Produce json
-// @Success 200 {object} []models.Products
+// @Success 200 {object} []models.Product
 // @Router /products [get]
-func GetAllRating(c *gin.Context) {
+func GetAllProducts(c *gin.Context) {
     // get db from gin context
     db := c.MustGet("db").(*gorm.DB)
     var products []models.Product
@@ -34,7 +34,7 @@ func GetAllRating(c *gin.Context) {
 // @Summary Create New Product.
 // @Description Creating a new Product.
 // @Tags Product
-// @Param Body body ProductInput true "the body to create a new Product"
+// @Param Body body productInput true "the body to create a new Product"
 // @Produce json
 // @Success 200 {object} models.Product
 // @Router /product [post]
@@ -86,7 +86,7 @@ func GetProductById(c *gin.Context) { // Get model if exist
 // @Tags Product
 // @Produce json
 // @Param id path string true "Product id"
-// @Param Body body ProductInput true "the body to update product"
+// @Param Body body productInput true "the body to update Product"
 // @Success 200 {object} models.Product
 // @Router /product/{id} [patch]
 func UpdateProduct(c *gin.Context) {
