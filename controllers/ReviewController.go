@@ -37,6 +37,8 @@ func GetAllReviews(c *gin.Context) {
 // @Tags Review
 // @Param Body body reviewInput true "the body to create a new review"
 // @Produce json
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Review
 // @Router /reviews [post]
 func CreateReview(c *gin.Context) {
@@ -95,6 +97,8 @@ func GetReviewById(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "review id"
 // @Param Body body reviewInput true "the body to update an review"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Review
 // @Router /reviews/{id} [patch]
 func UpdateReview(c *gin.Context) {
@@ -142,8 +146,10 @@ func UpdateReview(c *gin.Context) {
 // @Tags Review
 // @Produce json
 // @Param id path string true "review id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
-// @Router /review/{id} [delete]
+// @Router /reviews/{id} [delete]
 func DeleteReview(c *gin.Context) {
     // Get model if exist
     db := c.MustGet("db").(*gorm.DB)

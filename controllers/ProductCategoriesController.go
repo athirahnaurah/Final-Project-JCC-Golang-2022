@@ -34,6 +34,8 @@ func GetAllCategory(c *gin.Context) {
 // @Description Creating a new ProductCategory.
 // @Tags ProductCategory
 // @Param Body body productCategoryInput true "the body to create a new Category"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Produce json
 // @Success 200 {object} models.Category
 // @Router /product-categories [post]
@@ -101,6 +103,8 @@ func GetProductsByCategoryId(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "Category id"
 // @Param Body body productCategoryInput true "the body to update product category"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Category
 // @Router /product-categories/{id} [patch]
 func UpdateProductCategory(c *gin.Context) {
@@ -134,6 +138,8 @@ func UpdateProductCategory(c *gin.Context) {
 // @Tags ProductCategory
 // @Produce json
 // @Param id path string true "Category id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
 // @Router /product-categories/{id} [delete]
 func DeleteProductCategory(c *gin.Context) {

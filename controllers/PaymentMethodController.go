@@ -35,8 +35,10 @@ func GetAllPaymentMethod(c *gin.Context) {
 // @Tags PaymentMethod
 // @Param Body body paymentMethodInput true "the body to create a new Method"
 // @Produce json
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Method
-// @Router /payment-methods [post]
+// @Router /payment-method [post]
 func CreatePaymentMethod(c *gin.Context) {
     // Validate input
     var input paymentMethodInput
@@ -79,6 +81,8 @@ func GetPaymentMethodById(c *gin.Context) { // Get model if exist
 // @Tags PaymentMethod
 // @Produce json
 // @Param id path string true "Method id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} []models.Payment
 // @Router /payment-method/{id}/payments [get]
 func GetPaymentsByPaymentMethodId(c *gin.Context) { // Get model if exist
@@ -101,6 +105,8 @@ func GetPaymentsByPaymentMethodId(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "Method id"
 // @Param Body body paymentMethodInput true "the body to update payment method"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Method
 // @Router /payment-method/{id} [patch]
 func UpdatePaymentMethod(c *gin.Context) {
@@ -134,6 +140,8 @@ func UpdatePaymentMethod(c *gin.Context) {
 // @Tags PaymentMethod
 // @Produce json
 // @Param id path string true "Method id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
 // @Router /payment-method/{id} [delete]
 func DeletePaymentMethod(c *gin.Context) {

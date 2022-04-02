@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"Final-Project-JCC-Golang-2022/models"
 
@@ -21,6 +22,8 @@ type orderInput struct {
 // @Description Get a list of Orders.
 // @Tags Order
 // @Produce json
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} []models.Order
 // @Router /orders [get]
 func GetAllOrders(c *gin.Context) {
@@ -37,6 +40,8 @@ func GetAllOrders(c *gin.Context) {
 // @Description Creating a new Order.
 // @Tags Order
 // @Param Body body orderInput true "the body to create a new order"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Produce json
 // @Success 200 {object} models.Order
 // @Router /orders [post]
@@ -69,7 +74,7 @@ func CreateOrder(c *gin.Context) {
     }
 
     // Create Review
-    order := models.Order{Quantity: input.Quantity, ProductId: input.ProductId, PaymentId: input.PaymentId, UserId: input.UserId}
+    order := models.Order{Quantity: input.Quantity, ProductId: input.ProductId, PaymentId: input.PaymentId, OrderDate: time.Now(), UserId: input.UserId}
     db.Create(&order)
 
     c.JSON(http.StatusOK, gin.H{"data": order})
@@ -81,6 +86,8 @@ func CreateOrder(c *gin.Context) {
 // @Tags Order
 // @Produce json
 // @Param id path string true "order id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Order
 // @Router /orders/{id} [get]
 func GetOrderById(c *gin.Context) { // Get model if exist
@@ -102,6 +109,8 @@ func GetOrderById(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "order id"
 // @Param Body body orderInput true "the body to update an order"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Order
 // @Router /orders/{id} [patch]
 func UpdateOrder(c *gin.Context) {
@@ -156,8 +165,10 @@ func UpdateOrder(c *gin.Context) {
 // @Tags Order
 // @Produce json
 // @Param id path string true "order id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
-// @Router /order/{id} [delete]
+// @Router /orders/{id} [delete]
 func DeleteOrder(c *gin.Context) {
     // Get model if exist
     db := c.MustGet("db").(*gorm.DB)

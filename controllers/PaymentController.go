@@ -9,7 +9,6 @@ import (
 )
 
 type paymentInput struct {
-	Total float32   `json:"total"`
 	Status string   `json:"status"`
 	Method_id int      `json:"method_id"`
 }
@@ -19,8 +18,10 @@ type paymentInput struct {
 // @Description Get a list of Payments.
 // @Tags Payment
 // @Produce json
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} []models.Payment
-// @Router /payments [get]
+// @Router /payment [get]
 func GetAllPayments(c *gin.Context) {
     // get db from gin context
     db := c.MustGet("db").(*gorm.DB)
@@ -36,6 +37,8 @@ func GetAllPayments(c *gin.Context) {
 // @Tags Payment
 // @Param Body body paymentInput true "the body to create a new Payment"
 // @Produce json
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Payment
 // @Router /payment [post]
 func CreatePayment(c *gin.Context) {
@@ -54,7 +57,7 @@ func CreatePayment(c *gin.Context) {
     }
 
     // Create Payment
-    payment := models.Payment{Total: input.Total, Status: input.Status, MethodId: input.Method_id}
+    payment := models.Payment{Status: input.Status, MethodId: input.Method_id}
     db.Create(&payment)
 
     c.JSON(http.StatusOK, gin.H{"data": payment})
@@ -66,6 +69,8 @@ func CreatePayment(c *gin.Context) {
 // @Tags Payment
 // @Produce json
 // @Param id path string true "Payment id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Payment
 // @Router /payment/{id} [get]
 func GetPaymentById(c *gin.Context) { // Get model if exist
@@ -87,6 +92,8 @@ func GetPaymentById(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "Payment id"
 // @Param Body body paymentInput true "the body to update Payment"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Payment
 // @Router /payment/{id} [patch]
 func UpdatePayment(c *gin.Context) {
@@ -113,7 +120,6 @@ func UpdatePayment(c *gin.Context) {
     }
 
     var updatedInput models.Payment
-    updatedInput.Total= input.Total
     updatedInput.Status = input.Status
     updatedInput.MethodId = input.Method_id
 
@@ -128,6 +134,8 @@ func UpdatePayment(c *gin.Context) {
 // @Tags Payment
 // @Produce json
 // @Param id path string true "Payment id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
 // @Router /payment/{id} [delete]
 func DeletePayment(c *gin.Context) {

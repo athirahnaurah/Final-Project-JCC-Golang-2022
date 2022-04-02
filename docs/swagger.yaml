@@ -1,4 +1,56 @@
 definitions:
+  controllers.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.LoginUserInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RegisterInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  controllers.RegisterUserInput:
+    properties:
+      address:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      telephone:
+        type: string
+      username:
+        type: string
+    required:
+    - address
+    - email
+    - password
+    - telephone
+    - username
+    type: object
   controllers.orderInput:
     properties:
       payment_id:
@@ -16,8 +68,6 @@ definitions:
         type: integer
       status:
         type: string
-      total:
-        type: number
     type: object
   controllers.paymentMethodInput:
     properties:
@@ -35,6 +85,8 @@ definitions:
         type: integer
       desc:
         type: string
+      price:
+        type: number
       product:
         type: string
     type: object
@@ -84,8 +136,6 @@ definitions:
         type: integer
       status:
         type: string
-      total:
-        type: number
     type: object
   models.Product:
     properties:
@@ -95,6 +145,8 @@ definitions:
         type: string
       id:
         type: integer
+      price:
+        type: number
       product:
         type: string
     type: object
@@ -119,30 +171,59 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
 paths:
-  /order/{id}:
-    delete:
-      description: Delete a order by id.
+  /login-admin:
+    post:
+      description: Logging in to get jwt token to access admin or user api by roles.
+        Admin can add or update product, product category, and payment method
       parameters:
-      - description: order id
-        in: path
-        name: id
+      - description: the body to login a admin
+        in: body
+        name: Body
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: boolean
+            additionalProperties: true
             type: object
-      summary: Delete one order.
+      summary: Login as as admin.
       tags:
-      - Order
+      - Auth
+  /login-customer:
+    post:
+      description: Logging in to get jwt token to access customer api by roles. User
+        can create order, payment, and review a product.
+      parameters:
+      - description: the body to login a customer
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login as as customer.
+      tags:
+      - Customer
   /orders:
     get:
       description: Get a list of Orders.
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -152,6 +233,8 @@ paths:
             items:
               $ref: '#/definitions/models.Order'
             type: array
+      security:
+      - BearerToken: []
       summary: Get all orders.
       tags:
       - Order
@@ -164,23 +247,9 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.orderInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Order'
-      summary: Create New Order.
-      tags:
-      - Order
-  /orders/{id}:
-    get:
-      description: Get a Order by id.
-      parameters:
-      - description: order id
-        in: path
-        name: id
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
         required: true
         type: string
       produces:
@@ -190,6 +259,61 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Order'
+      security:
+      - BearerToken: []
+      summary: Create New Order.
+      tags:
+      - Order
+  /orders/{id}:
+    delete:
+      description: Delete a order by id.
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerToken: []
+      summary: Delete one order.
+      tags:
+      - Order
+    get:
+      description: Get a Order by id.
+      parameters:
+      - description: order id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Order'
+      security:
+      - BearerToken: []
       summary: Get Order.
       tags:
       - Order
@@ -207,6 +331,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.orderInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -214,10 +343,34 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Order'
+      security:
+      - BearerToken: []
       summary: Update Order.
       tags:
       - Order
   /payment:
+    get:
+      description: Get a list of Payments.
+      parameters:
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Payment'
+            type: array
+      security:
+      - BearerToken: []
+      summary: Get all Payments.
+      tags:
+      - Payment
     post:
       description: Creating a new Payments.
       parameters:
@@ -227,6 +380,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.paymentInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -234,6 +392,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Payment'
+      security:
+      - BearerToken: []
       summary: Create New Payments.
       tags:
       - Payment
@@ -252,6 +412,32 @@ paths:
       summary: Get all PaymentMethod.
       tags:
       - PaymentMethod
+    post:
+      description: Creating a new Method.
+      parameters:
+      - description: the body to create a new Method
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.paymentMethodInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Method'
+      security:
+      - BearerToken: []
+      summary: Create New Method.
+      tags:
+      - PaymentMethod
   /payment-method/{id}:
     delete:
       description: Delete a Method by id.
@@ -259,6 +445,11 @@ paths:
       - description: Method id
         in: path
         name: id
+        required: true
+        type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
         required: true
         type: string
       produces:
@@ -270,6 +461,8 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+      security:
+      - BearerToken: []
       summary: Delete one Method.
       tags:
       - PaymentMethod
@@ -305,6 +498,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.paymentMethodInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -312,6 +510,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Method'
+      security:
+      - BearerToken: []
       summary: Update Method.
       tags:
       - PaymentMethod
@@ -324,6 +524,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -333,27 +538,9 @@ paths:
             items:
               $ref: '#/definitions/models.Payment'
             type: array
+      security:
+      - BearerToken: []
       summary: Get Payments.
-      tags:
-      - PaymentMethod
-  /payment-methods:
-    post:
-      description: Creating a new Method.
-      parameters:
-      - description: the body to create a new Method
-        in: body
-        name: Body
-        required: true
-        schema:
-          $ref: '#/definitions/controllers.paymentMethodInput'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Method'
-      summary: Create New Method.
       tags:
       - PaymentMethod
   /payment/{id}:
@@ -365,6 +552,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -374,6 +566,8 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+      security:
+      - BearerToken: []
       summary: Delete one Payment.
       tags:
       - Payment
@@ -385,6 +579,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -392,6 +591,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Payment'
+      security:
+      - BearerToken: []
       summary: Get Payment.
       tags:
       - Payment
@@ -409,6 +610,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.paymentInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -416,22 +622,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Payment'
+      security:
+      - BearerToken: []
       summary: Update Payment.
-      tags:
-      - Payment
-  /payments:
-    get:
-      description: Get a list of Payments.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Payment'
-            type: array
-      summary: Get all Payments.
       tags:
       - Payment
   /product:
@@ -444,6 +637,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.productInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -451,6 +649,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Product'
+      security:
+      - BearerToken: []
       summary: Create New Product.
       tags:
       - Product
@@ -478,6 +678,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.productCategoryInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -485,6 +690,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Category'
+      security:
+      - BearerToken: []
       summary: Create New ProductCategory.
       tags:
       - ProductCategory
@@ -497,6 +704,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -506,6 +718,8 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+      security:
+      - BearerToken: []
       summary: Delete one Category.
       tags:
       - ProductCategory
@@ -541,6 +755,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.productCategoryInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -548,6 +767,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Category'
+      security:
+      - BearerToken: []
       summary: Update Category.
       tags:
       - ProductCategory
@@ -581,6 +802,11 @@ paths:
         name: id
         required: true
         type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -590,6 +816,8 @@ paths:
             additionalProperties:
               type: boolean
             type: object
+      security:
+      - BearerToken: []
       summary: Delete one Product.
       tags:
       - Product
@@ -625,6 +853,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.productInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -632,6 +865,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Product'
+      security:
+      - BearerToken: []
       summary: Update Product.
       tags:
       - Product
@@ -650,27 +885,48 @@ paths:
       summary: Get all Products.
       tags:
       - Product
-  /review/{id}:
-    delete:
-      description: Delete a review by id.
+  /register-admin:
+    post:
+      description: registering a admin from public access.
       parameters:
-      - description: review id
-        in: path
-        name: id
+      - description: the body to register a admin
+        in: body
+        name: Body
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/controllers.RegisterInput'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            additionalProperties:
-              type: boolean
+            additionalProperties: true
             type: object
-      summary: Delete one review.
+      summary: Register a admin.
       tags:
-      - Review
+      - Auth
+  /register-customer:
+    post:
+      description: registering a customer from public access.
+      parameters:
+      - description: the body to register a customer
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a customer.
+      tags:
+      - Customer
   /reviews:
     get:
       description: Get a list of Reviews.
@@ -695,6 +951,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.reviewInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -702,10 +963,39 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Review'
+      security:
+      - BearerToken: []
       summary: Create New Review.
       tags:
       - Review
   /reviews/{id}:
+    delete:
+      description: Delete a review by id.
+      parameters:
+      - description: review id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: boolean
+            type: object
+      security:
+      - BearerToken: []
+      summary: Delete one review.
+      tags:
+      - Review
     get:
       description: Get a Review by id.
       parameters:
@@ -738,6 +1028,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/controllers.reviewInput'
+      - description: 'Authorization. How to input in swagger : ''Bearer <insert_your_token_here>'''
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -745,6 +1040,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Review'
+      security:
+      - BearerToken: []
       summary: Update Review.
       tags:
       - Review

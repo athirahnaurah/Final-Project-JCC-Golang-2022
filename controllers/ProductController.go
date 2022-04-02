@@ -11,6 +11,7 @@ import (
 type productInput struct {
 	ProductName string   `json:"product"`
 	Description string   `json:"desc"`
+    Price float32 `json:"price"`
 	Category_id int      `json:"category_id"`
 }
 
@@ -35,6 +36,8 @@ func GetAllProducts(c *gin.Context) {
 // @Description Creating a new Product.
 // @Tags Product
 // @Param Body body productInput true "the body to create a new Product"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Produce json
 // @Success 200 {object} models.Product
 // @Router /product [post]
@@ -54,7 +57,7 @@ func CreateProduct(c *gin.Context) {
     }
 
     // Create Rating
-    product := models.Product{ProductName: input.ProductName, Description: input.Description, Category_id: input.Category_id}
+    product := models.Product{ProductName: input.ProductName, Description: input.Description, Price: input.Price, Category_id: input.Category_id}
     db.Create(&product)
 
     c.JSON(http.StatusOK, gin.H{"data": product})
@@ -87,6 +90,8 @@ func GetProductById(c *gin.Context) { // Get model if exist
 // @Produce json
 // @Param id path string true "Product id"
 // @Param Body body productInput true "the body to update Product"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} models.Product
 // @Router /product/{id} [patch]
 func UpdateProduct(c *gin.Context) {
@@ -115,6 +120,7 @@ func UpdateProduct(c *gin.Context) {
     var updatedInput models.Product
     updatedInput.ProductName= input.ProductName
     updatedInput.Description = input.Description
+    updatedInput.Price = input.Price
     updatedInput.Category_id = input.Category_id
 
     db.Model(&product).Updates(updatedInput)
@@ -128,6 +134,8 @@ func UpdateProduct(c *gin.Context) {
 // @Tags Product
 // @Produce json
 // @Param id path string true "Product id"
+// @Param Authorization header string true "Authorization. How to input in swagger : 'Bearer <insert_your_token_here>'"
+// @Security BearerToken
 // @Success 200 {object} map[string]boolean
 // @Router /product/{id} [delete]
 func DeleteProduct(c *gin.Context) {

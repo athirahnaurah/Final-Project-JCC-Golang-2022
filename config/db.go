@@ -22,7 +22,7 @@ import (
 	  panic(err.Error())
 	}
   
-	db.AutoMigrate(&models.Order{}, &models.Method{}, &models.Payment{}, &models.Category{}, &models.Product{},&models.Review{},&models.User{})
+	db.AutoMigrate(&models.Order{}, &models.Method{}, &models.Payment{}, &models.Category{}, &models.Product{},&models.Review{},&models.User{},&models.Admin{})
   
 	return db
   }

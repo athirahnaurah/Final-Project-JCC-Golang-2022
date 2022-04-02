@@ -25,23 +25,25 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/order/{id}": {
-            "delete": {
-                "description": "Delete a order by id.",
+        "/login-admin": {
+            "post": {
+                "description": "Logging in to get jwt token to access admin or user api by roles. Admin can add or update product, product category, and payment method",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Order"
+                    "Auth"
                 ],
-                "summary": "Delete one order.",
+                "summary": "Login as as admin.",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "order id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "the body to login a admin",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.LoginInput"
+                        }
                     }
                 ],
                 "responses": {
@@ -49,9 +51,39 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "boolean"
-                            }
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/login-customer": {
+            "post": {
+                "description": "Logging in to get jwt token to access customer api by roles. User can create order, payment, and review a product.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Login as as customer.",
+                "parameters": [
+                    {
+                        "description": "the body to login a customer",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.LoginUserInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -59,6 +91,11 @@ const docTemplate = `{
         },
         "/orders": {
             "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Get a list of Orders.",
                 "produces": [
                     "application/json"
@@ -67,6 +104,15 @@ const docTemplate = `{
                     "Order"
                 ],
                 "summary": "Get all orders.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -80,6 +126,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Creating a new Order.",
                 "produces": [
                     "application/json"
@@ -97,6 +148,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.orderInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -111,6 +169,11 @@ const docTemplate = `{
         },
         "/orders/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Get a Order by id.",
                 "produces": [
                     "application/json"
@@ -126,6 +189,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -137,7 +207,54 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Delete a order by id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Order"
+                ],
+                "summary": "Delete one order.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "order id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update order by id.",
                 "produces": [
                     "application/json"
@@ -162,6 +279,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.orderInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -175,7 +299,47 @@ const docTemplate = `{
             }
         },
         "/payment": {
+            "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Get a list of Payments.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payment"
+                ],
+                "summary": "Get all Payments.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Payment"
+                            }
+                        }
+                    }
+                }
+            },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Creating a new Payments.",
                 "produces": [
                     "application/json"
@@ -193,6 +357,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.paymentInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -223,6 +394,47 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/models.Method"
                             }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Creating a new Method.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PaymentMethod"
+                ],
+                "summary": "Create New Method.",
+                "parameters": [
+                    {
+                        "description": "the body to create a new Method",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.paymentMethodInput"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Method"
                         }
                     }
                 }
@@ -257,6 +469,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Delete a Method by id.",
                 "produces": [
                     "application/json"
@@ -271,6 +488,13 @@ const docTemplate = `{
                         "description": "Method id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -287,6 +511,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update Method by id.",
                 "produces": [
                     "application/json"
@@ -311,6 +540,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.paymentMethodInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -325,6 +561,11 @@ const docTemplate = `{
         },
         "/payment-method/{id}/payments": {
             "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Get all Payments by MethodId.",
                 "produces": [
                     "application/json"
@@ -339,6 +580,13 @@ const docTemplate = `{
                         "description": "Method id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -355,39 +603,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/payment-methods": {
-            "post": {
-                "description": "Creating a new Method.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "PaymentMethod"
-                ],
-                "summary": "Create New Method.",
-                "parameters": [
-                    {
-                        "description": "the body to create a new Method",
-                        "name": "Body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controllers.paymentMethodInput"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Method"
-                        }
-                    }
-                }
-            }
-        },
         "/payment/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Get an Payment by id.",
                 "produces": [
                     "application/json"
@@ -403,6 +625,13 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -415,6 +644,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Delete a Payment by id.",
                 "produces": [
                     "application/json"
@@ -429,6 +663,13 @@ const docTemplate = `{
                         "description": "Payment id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -445,6 +686,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update Payment by id.",
                 "produces": [
                     "application/json"
@@ -469,6 +715,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.paymentInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -481,31 +734,13 @@ const docTemplate = `{
                 }
             }
         },
-        "/payments": {
-            "get": {
-                "description": "Get a list of Payments.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Payment"
-                ],
-                "summary": "Get all Payments.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Payment"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/product": {
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Creating a new Product.",
                 "produces": [
                     "application/json"
@@ -523,6 +758,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.productInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -558,6 +800,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Creating a new ProductCategory.",
                 "produces": [
                     "application/json"
@@ -575,6 +822,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.productCategoryInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -616,6 +870,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Delete a Category by id.",
                 "produces": [
                     "application/json"
@@ -630,6 +889,13 @@ const docTemplate = `{
                         "description": "Category id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -646,6 +912,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update Category by id.",
                 "produces": [
                     "application/json"
@@ -670,6 +941,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.productCategoryInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -743,6 +1021,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Delete a Product by id.",
                 "produces": [
                     "application/json"
@@ -757,6 +1040,13 @@ const docTemplate = `{
                         "description": "Product id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -773,6 +1063,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update Product by id.",
                 "produces": [
                     "application/json"
@@ -797,6 +1092,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.productInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -832,23 +1134,25 @@ const docTemplate = `{
                 }
             }
         },
-        "/review/{id}": {
-            "delete": {
-                "description": "Delete a review by id.",
+        "/register-admin": {
+            "post": {
+                "description": "registering a admin from public access.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Review"
+                    "Auth"
                 ],
-                "summary": "Delete one review.",
+                "summary": "Register a admin.",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "review id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "the body to register a admin",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RegisterInput"
+                        }
                     }
                 ],
                 "responses": {
@@ -856,9 +1160,39 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "type": "object",
-                            "additionalProperties": {
-                                "type": "boolean"
-                            }
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/register-customer": {
+            "post": {
+                "description": "registering a customer from public access.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Customer"
+                ],
+                "summary": "Register a customer.",
+                "parameters": [
+                    {
+                        "description": "the body to register a customer",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controllers.RegisterUserInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     }
                 }
@@ -887,6 +1221,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Creating a new Review.",
                 "produces": [
                     "application/json"
@@ -904,6 +1243,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.reviewInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -944,7 +1290,54 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
+                "description": "Delete a review by id.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Delete one review.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "review id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            },
             "patch": {
+                "security": [
+                    {
+                        "BearerToken": []
+                    }
+                ],
                 "description": "Update review by id.",
                 "produces": [
                     "application/json"
@@ -969,6 +1362,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controllers.reviewInput"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Authorization. How to input in swagger : 'Bearer \u003cinsert_your_token_here\u003e'",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -983,6 +1383,82 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controllers.LoginInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.LoginUserInput": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.RegisterInput": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.RegisterUserInput": {
+            "type": "object",
+            "required": [
+                "address",
+                "email",
+                "password",
+                "telephone",
+                "username"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "telephone": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.orderInput": {
             "type": "object",
             "properties": {
@@ -1008,9 +1484,6 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "number"
                 }
             }
         },
@@ -1038,6 +1511,9 @@ const docTemplate = `{
                 },
                 "desc": {
                     "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 },
                 "product": {
                     "type": "string"
@@ -1114,9 +1590,6 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
-                },
-                "total": {
-                    "type": "number"
                 }
             }
         },
@@ -1131,6 +1604,9 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "integer"
+                },
+                "price": {
+                    "type": "number"
                 },
                 "product": {
                     "type": "string"

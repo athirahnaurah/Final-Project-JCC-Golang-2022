@@ -4,6 +4,9 @@ import (
 	"Final-Project-JCC-Golang-2022/config"
 	"Final-Project-JCC-Golang-2022/docs"
 	"Final-Project-JCC-Golang-2022/routes"
+	"log"
+
+	"github.com/joho/godotenv"
 )
 
 // @contact.name API Support
@@ -16,6 +19,12 @@ import (
 // @termsOfService http://swagger.io/terms/
 
 func main() {
+	// for load godotenv
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Error loading .env file")
+    }
+	
 	//programmatically set swagger info
 	docs.SwaggerInfo.Title = "Swagger E-Commerce API"
 	docs.SwaggerInfo.Description = "This is a sample server E-Commerce."
