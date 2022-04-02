@@ -14,7 +14,7 @@ const docTemplate = `{
         "contact": {
             "name": "API Support",
             "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+            "email": "naurathirahh@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",

@@ -12,7 +12,7 @@ import (
 
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
+// @contact.email naurathirahh@gmail.com
 
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
@@ -35,6 +35,7 @@ func main() {
 	//programmatically set swagger info
 	docs.SwaggerInfo.Title = "Swagger E-Commerce API"
 	docs.SwaggerInfo.Description = "This is a sample server E-Commerce."
+	docs.SwaggerInfo.InfoInstanceName = "Athirah Naurah F"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = utils.Getenv("SWAGGER_HOST", "localhost:8080")
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
